@@ -1,5 +1,4 @@
-
-$(document).ready(function() {
+$(document).ready(function () {
 
     var item,
         img,
@@ -15,9 +14,20 @@ $(document).ready(function() {
         lb_loading = false,
         doc = $(document);
 
+    /**
+     * WINNIE, here is how to do it!
+     * @description
+     * So what I'm doing is checking if there is a href tag on the LI element.
+     * Look below in lightbox li for the other.
+     */
+    $('li[href]').on('click', function () {
+        var item = $(this);
+        window.open(item.attr('href') + '?version=' + (new Date()).toString(), '_blank');
+    });
 
 
-    $("#lightbox li").on('click', function() {
+
+    $("#lightbox li").on('click', function () {
 
         if (lb_loading) return false;
 
@@ -29,8 +39,13 @@ $(document).ready(function() {
             img = item.find("img"),
             title = item.find(".title").html();
 
+        // If it has that attribute of href then go ahead and stop this function from running.
+        if (item.attr('href')) {
+            return;
+        }
 
-        $("#lightbox li.active").removeClass("active");
+
+        $("#lightbox li.show.active").removeClass("active");
 
 
         item.addClass("active");
@@ -88,7 +103,7 @@ $(document).ready(function() {
         });
 
 
-        $(large_img).load(function() {
+        $(large_img).load(function () {
 
             CW = large_img.width;
             CH = large_img.height;
@@ -105,7 +120,7 @@ $(document).ready(function() {
                 height: CH,
                 top: CT,
                 left: CL
-            }, 500, function() {
+            }, 500, function () {
 
 
                 imgtag = '<img src="' + large_img.src + '" style="opacity: 0;" />';
@@ -122,18 +137,18 @@ $(document).ready(function() {
     })
 
 
-    doc.on("click", ".lb_previous", function() {
+    doc.on("click", ".lb_previous", function () {
         navigate(-1)
     });
-    doc.on("click", ".lb_next", function() {
+    doc.on("click", ".lb_next", function () {
         navigate(1)
     });
-    doc.on("click", ".lb_backdrop", function() {
+    doc.on("click", ".lb_backdrop", function () {
         navigate(0)
     });
 
 
-    doc.keyup(function(e) {
+    doc.keyup(function (e) {
 
         if ($(".lb_backdrop:visible").length == 1) {
             //Left
@@ -148,14 +163,14 @@ $(document).ready(function() {
     //Navigation function
     function navigate(direction) {
         if (direction == -1) // left
-            $("#lightbox li.active").prev().trigger("click");
+            $("#lightbox li.show.active").prev().trigger("click");
         else if (direction == 1) //right
-            $("#lightbox li.active").next().trigger("click");
+            $("#lightbox li.show.active").next().trigger("click");
         else if (direction == 0) //exit
         {
-            $("#lightbox li.active").removeClass("active");
+            $("#lightbox li.show.active").removeClass("active");
             $(".lb_canvas").removeClass("loading");
-            $(".lb_backdrop, .lb_canvas, .lb_controls").fadeOut("slow", function() {
+            $(".lb_backdrop, .lb_canvas, .lb_controls").fadeOut("slow", function () {
 
                 $(".lb_canvas, .lb_title").html("");
             })
